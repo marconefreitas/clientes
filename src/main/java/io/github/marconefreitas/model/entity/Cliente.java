@@ -39,7 +39,9 @@ public class Cliente {
 
     @PrePersist
     public void prePersist(){
-        setDataCadastro(LocalDate.now());
+        //setDataCadastro(LocalDate.now());
+        this.setDataCadastro(LocalDate.now());
     }
+
 
 }
