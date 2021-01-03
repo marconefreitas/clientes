@@ -1,5 +1,7 @@
 package io.github.marconefreitas.config;
 
+import io.github.marconefreitas.service.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,12 +18,18 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private UsuarioService userService;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
+        /*auth.inMemoryAuthentication()
                 .withUser("fulano")
                 .password("senha123")
                 .roles("USER");
+                */
+        auth.userDetailsService(userService)
+         .passwordEncoder(passwordEncoder());
     }
     @Bean
     public AuthenticationManager authenticationManager() throws  Exception{
@@ -37,6 +45,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+       web.ignoring()
+               .antMatchers("/h2-console/**");
     }
 
     @Bean
